@@ -26,6 +26,15 @@ pipeline {
           }
         }
       }
+        steps {
+        script {
+          dir ('src') {
+            sh 'terraform init'
+            sh 'terraform destroy --auto-approve'
+          }
+        }
+      }
     }
   }
 }
+
