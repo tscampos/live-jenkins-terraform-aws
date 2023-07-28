@@ -40,12 +40,12 @@ variable "route_table_name" {
 
 variable "key_pair_name" {
   type    = string
-  default = "labs-key"
+  default = "ec2-key"
 }
 
 variable "instance_name" {
   type    = string
-  default = "lab-ec2"
+  default = "pipeline-ec2"
 }
 
 variable "instance_ami" {
