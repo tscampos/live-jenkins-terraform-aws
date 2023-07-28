@@ -12,7 +12,7 @@ pipeline {
       steps {
         script {
           dir('src') {
-            sh 'terraform init'
+            sh 'terraform init -backend-config="bucket=$AWS_BUCKET" -backend-config="key=$AWS_BUCKET_KEY"'
             sh 'terraform destroy --auto-approve'
           }
         }
