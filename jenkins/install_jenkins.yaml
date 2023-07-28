@@ -1,0 +1,75 @@
+---
+- name: Instalação do Jenkins e Terraform
+  hosts: all  # O nome do host usado no arquivo de inventário (hosts)
+  remote_user: root
+  become: yes            # Executar com privilégios de root (sudo)
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Java
+      apt:
+        name: openjdk-11-jdk   # Pode ser adaptado para outras versões do Java
+        state: present
+
+    # Adicionar chave GPG do repositório Jenkins manualmente
+    - name: Add Jenkins GPG key
+      raw: |
+        wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
+      ignore_errors: yes  # Ignorar erros para continuar a execução mesmo que a chave não seja verificada
+
+    - name: Add Jenkins APT repository
+      apt_repository:
+        repo: deb [trusted=yes] http://pkg.jenkins.io/debian-stable binary/
+        state: present
+
+    - name: Install Jenkins
+      apt:
+        name: jenkins
+        state: present
+
+    - name: Start Jenkins service
+      service:
+        name: jenkins
+        state: started
+        enabled: yes
+
+    - name: Wait for Jenkins to start
+      wait_for:
+        host: 127.0.0.1
+        port: 8080
+        delay: 10
+        timeout: 300
+        state: started
+
+      # Tarefa para instalação do Terraform
+    - name: Install unzip package
+      apt:
+        name: unzip
+        state: present
+      become: yes
+
+    - name: Download Terraform binary
+      get_url:
+        url: "https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip" # Atualize a URL com a versão desejada
+        dest: /tmp/terraform.zip
+
+    - name: Unzip Terraform binary
+      command: "unzip -o /tmp/terraform.zip -d /usr/local/bin/"
+      become: yes
+
+    - name: Set Terraform permissions
+      file:
+        path: /usr/local/bin/terraform
+        mode: "0755"
+      become: yes
+
+    - name: Get Jenkins admin password
+      command: "cat /var/lib/jenkins/secrets/initialAdminPassword"
+      register: jenkins_admin_password
+
+    - name: Print Jenkins admin password
+      debug:
+        var: jenkins_admin_password.stdout
