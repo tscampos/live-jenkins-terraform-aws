@@ -8,7 +8,6 @@ terraform {
 }
 
 provider "digitalocean" {
-  token = "" # Substitua pelo seu token da DigitalOcean
 }
 
 resource "digitalocean_droplet" "jenkins" {
