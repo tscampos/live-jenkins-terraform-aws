@@ -8,7 +8,10 @@ terraform {
 }
 
 provider "digitalocean" {
+  token = var.do_token
 }
+
+variable "do_token" {}
 
 resource "digitalocean_droplet" "jenkins" {
   name  = "jenkins-droplet"
