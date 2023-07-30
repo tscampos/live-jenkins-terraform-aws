@@ -1,7 +1,7 @@
 # Pipeline básica
 
-- Instalação droplet na Digital Ocean via terraform
-- Instalação do Jenkins no droplet criado com Ansible
+- Instalação de droplet na Digital Ocean via terraform
+- Instalação do Jenkins com Ansible Playbook no droplet criado
 - Utilização de pipeline do Jenkins para automatizar:
 
   1 - Criação de infra na AWS
